@@ -41,14 +41,8 @@
     <section class="scene" id="scene" aria-label="3D pomodoro timer">
       <div class="floor-shadow"></div>
       <div class="timer-object" id="timerObject">
-        <div class="stem stem-back"></div>
-        <button id="dial" class="dial" aria-label="Drag top left or right to adjust minutes" title="Drag left or right to set minutes">
-          <div class="dial-ridges"></div>
-          <div class="dial-marker"></div>
-        </button>
-        <div class="stem stem-left"></div>
-        <div class="stem stem-right"></div>
 
+        <!-- Fixed lower half -->
         <div class="tomato-body">
           <div class="tomato-highlight"></div>
           <div class="tomato-rim"></div>
@@ -68,11 +62,28 @@
           </div>
         </div>
 
+        <!-- Entire upper half rotates together like a physical Pomodoro -->
+        <div id="mechanicalTop" class="mechanical-top" aria-hidden="true">
+          <div class="upper-shell">
+            <div class="upper-surface-highlight"></div>
+            <div class="turning-band"></div>
+          </div>
+          <div class="stem stem-back"></div>
+          <div class="stem stem-left"></div>
+          <div class="stem stem-right"></div>
+        </div>
+
+        <!-- Fixed body index; the upper half turns past it -->
+        <div class="body-index" aria-hidden="true"></div>
+
+        <!-- Invisible touch surface covering the complete upper tomato half. app.js still uses #dial internally. -->
+        <button id="dial" class="top-drag-surface" aria-label="Hold the upper half and drag left or right to set minutes" title="Hold and twist left or right"></button>
+
         <div class="base-ring">
           <div class="base-glow"></div>
         </div>
       </div>
-      <div class="hint" id="dialHint">Drag the top left / right to set time</div>
+      <div class="hint" id="dialHint">Hold the upper half and drag left / right</div>
     </section>
 
     <section class="controls" aria-label="Timer controls">
