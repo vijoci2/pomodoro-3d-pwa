@@ -14,6 +14,7 @@
   <link rel="apple-touch-icon" href="./icon-192.svg" />
   <title>Pomodoro 3D</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./mechanical.css" />
 </head>
 <body>
   <div class="ambient ambient-a"></div>
@@ -41,7 +42,7 @@
       <div class="floor-shadow"></div>
       <div class="timer-object" id="timerObject">
         <div class="stem stem-back"></div>
-        <button id="dial" class="dial" aria-label="Drag dial to adjust minutes" title="Drag to adjust minutes">
+        <button id="dial" class="dial" aria-label="Drag top left or right to adjust minutes" title="Drag left or right to set minutes">
           <div class="dial-ridges"></div>
           <div class="dial-marker"></div>
         </button>
@@ -71,7 +72,7 @@
           <div class="base-glow"></div>
         </div>
       </div>
-      <div class="hint" id="dialHint">Drag the top dial to adjust time</div>
+      <div class="hint" id="dialHint">Drag the top left / right to set time</div>
     </section>
 
     <section class="controls" aria-label="Timer controls">
@@ -142,5 +143,6 @@
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
   <script src="./app.js" defer></script>
+  <script src="./mechanical-dial.js" defer></script>
 </body>
 </html>
