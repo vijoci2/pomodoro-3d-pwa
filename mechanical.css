@@ -1,0 +1,103 @@
+.mechanical-top {
+  position:absolute;
+  inset:0 auto auto 0;
+  width:260px;
+  height:92px;
+  z-index:5;
+  transform-style:preserve-3d;
+  transform-origin:130px 55px;
+  transform:translateZ(26px) rotateZ(var(--crown-angle,-25deg));
+  transition:transform .12s cubic-bezier(.2,.75,.25,1), filter .15s ease;
+  pointer-events:none;
+  will-change:transform;
+}
+.mechanical-top.dragging {
+  transition:none;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.25));
+}
+.mechanical-top .dial {
+  pointer-events:auto;
+  transform:translateZ(42px) rotateX(64deg) !important;
+}
+.mechanical-top .dial:active {
+  transform:translateZ(45px) rotateX(64deg) scale(1.035) !important;
+}
+.mechanical-scale {
+  position:absolute;
+  left:61px;
+  top:24px;
+  width:138px;
+  height:72px;
+  border-radius:50%;
+  transform:translateZ(31px) rotateX(65deg);
+  background:repeating-conic-gradient(from -2deg,
+    rgba(255,245,238,.42) 0 1.1deg,
+    transparent 1.1deg 6deg);
+  opacity:.6;
+  -webkit-mask:radial-gradient(ellipse,transparent 0 57%,#000 59% 70%,transparent 72%);
+  mask:radial-gradient(ellipse,transparent 0 57%,#000 59% 70%,transparent 72%);
+  pointer-events:none;
+}
+.mechanical-scale::after {
+  content:"";
+  position:absolute;
+  inset:7px;
+  border-radius:50%;
+  border:1px solid rgba(255,240,230,.18);
+}
+.body-index {
+  position:absolute;
+  left:124px;
+  top:55px;
+  z-index:7;
+  width:12px;
+  height:10px;
+  transform:translateZ(55px);
+  pointer-events:none;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));
+}
+.body-index::before {
+  content:"";
+  display:block;
+  width:0;
+  height:0;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:10px solid #fff3e9;
+}
+.dial::before {
+  content:"";
+  position:absolute;
+  inset:-7px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 0 0 2px rgba(109,12,28,.12), inset 0 0 11px rgba(65,0,9,.2);
+  pointer-events:none;
+}
+.dial-ridges {
+  background:repeating-conic-gradient(from 0deg,
+    rgba(79,4,15,.40) 0 2deg,
+    transparent 2deg 8deg);
+  border:0;
+}
+#dialHint {
+  color:#a99caf;
+  font-weight:700;
+}
+#dialHint::before {
+  content:"↔ ";
+  color:#ff858a;
+  font-weight:900;
+}
+@media (pointer:coarse) {
+  .mechanical-top .dial {
+    width:88px;
+    height:61px;
+    left:86px;
+    top:7px;
+  }
+  .mechanical-scale {
+    left:57px;
+    width:146px;
+  }
+}
