@@ -1,160 +1,68 @@
-.mechanical-top {
-  --crown-angle:-25deg;
-  position:absolute;
-  left:18px;
-  top:27px;
-  width:224px;
-  height:128px;
-  z-index:6;
-  transform-style:preserve-3d;
-  transform-origin:112px 68px;
-  transform:translateZ(28px) rotateZ(var(--crown-angle));
-  transition:transform .14s cubic-bezier(.2,.78,.24,1), filter .15s ease;
-  pointer-events:none;
-  will-change:transform;
-}
-.mechanical-top.dragging {
-  transition:none;
-  filter:drop-shadow(0 10px 12px rgba(0,0,0,.28));
-}
+.timer-object { width:260px; height:270px; position:relative; transform-style:preserve-3d; }
 
-/* The complete upper red half of the tomato. */
-.upper-shell {
-  position:absolute;
-  left:0;
-  top:28px;
-  width:224px;
-  height:94px;
+.lower-shell {
+  position:absolute; left:18px; top:126px; width:224px; height:119px; z-index:3;
+  border-radius:10% 10% 49% 51% / 10% 10% 55% 56%;
+  background:
+    radial-gradient(circle at 31% 4%,rgba(255,255,255,.13),transparent 27%),
+    radial-gradient(circle at 70% 72%,rgba(80,0,12,.28),transparent 47%),
+    linear-gradient(145deg,#f15050 0%,#df303e 43%,#bb1c30 74%,#8e1126 100%);
+  box-shadow:inset 15px 8px 20px rgba(255,255,255,.06),inset -20px -24px 30px rgba(63,0,12,.3),0 28px 42px rgba(0,0,0,.44);
+  transform:translateZ(14px);
   overflow:hidden;
-  border-radius:49% 51% 18% 18% / 72% 72% 20% 20%;
-  background:
-    radial-gradient(circle at 34% 18%,rgba(255,255,255,.33) 0 4%,transparent 23%),
-    radial-gradient(circle at 65% 82%,rgba(104,0,14,.20),transparent 48%),
-    linear-gradient(145deg,#ff7167 0%,#ef3f46 39%,#d62335 68%,#a8152b 100%);
-  box-shadow:
-    inset 15px 12px 20px rgba(255,255,255,.08),
-    inset -17px -18px 26px rgba(72,1,12,.25),
-    0 8px 12px rgba(61,0,8,.20);
 }
-.upper-shell::after {
-  content:"";
-  position:absolute;
-  left:5px;
-  right:5px;
-  bottom:0;
-  height:10px;
-  border-radius:50%;
-  background:linear-gradient(to bottom,rgba(255,120,122,.42),rgba(104,5,20,.52));
-  box-shadow:inset 0 2px 3px rgba(255,255,255,.17),0 3px 6px rgba(45,0,8,.35);
-}
-.upper-surface-highlight {
-  position:absolute;
-  left:37px;
-  top:12px;
-  width:82px;
-  height:40px;
-  border-radius:50%;
-  background:radial-gradient(ellipse,rgba(255,255,255,.18),transparent 70%);
-  transform:rotate(-17deg);
-  filter:blur(1px);
-}
-.turning-band {
-  position:absolute;
-  left:5px;
-  right:5px;
-  bottom:2px;
-  height:13px;
-  border-radius:50%;
-  background:
-    repeating-linear-gradient(90deg,rgba(255,240,231,.42) 0 1px,transparent 1px 7px),
-    linear-gradient(rgba(102,7,20,.12),rgba(75,4,15,.25));
-  opacity:.9;
-}
+.lower-shell::before { content:""; position:absolute; left:4px; right:4px; top:-7px; height:18px; border-radius:50%; background:linear-gradient(#9d1328,#d63843 65%,#7b0b1c); box-shadow:inset 0 2px 4px rgba(255,255,255,.14),0 4px 8px rgba(54,0,7,.28); }
+.lower-highlight { position:absolute; left:35px; top:19px; width:72px; height:35px; border-radius:50%; background:radial-gradient(ellipse,rgba(255,255,255,.13),transparent 70%); }
+.lower-shadow { position:absolute; right:6px; bottom:3px; width:105px; height:72px; border-radius:50%; background:radial-gradient(ellipse,rgba(62,0,12,.23),transparent 68%); }
 
-/* Hide the fixed tomato's original upper surface so the split reads as two physical pieces. */
-.tomato-body {
-  clip-path:polygon(0 43%,100% 43%,100% 100%,0 100%);
+.mechanical-top {
+  --yaw:0deg;
+  position:absolute; left:18px; top:35px; width:224px; height:111px; z-index:7;
+  transform-style:preserve-3d; transform-origin:112px 97px;
+  transform:translateZ(28px) rotateY(var(--yaw));
+  transition:transform .14s cubic-bezier(.18,.8,.25,1),filter .12s ease;
+  pointer-events:none; will-change:transform;
 }
-.tomato-body .tomato-highlight,
-.tomato-body .tomato-rim { opacity:0; }
+.mechanical-top.dragging { transition:none; filter:drop-shadow(0 8px 9px rgba(0,0,0,.26)); }
+.upper-shell {
+  position:absolute; left:0; top:30px; width:224px; height:81px; overflow:hidden;
+  border-radius:49% 51% 9% 9% / 80% 80% 9% 9%;
+  background:radial-gradient(circle at 32% 21%,rgba(255,255,255,.34) 0 4%,transparent 22%),radial-gradient(circle at 72% 70%,rgba(94,0,11,.20),transparent 43%),linear-gradient(145deg,#ff7469,#ee4147 42%,#d52436 70%,#a8172c);
+  box-shadow:inset 15px 12px 20px rgba(255,255,255,.08),inset -17px -16px 25px rgba(69,0,12,.27),0 8px 12px rgba(59,0,9,.22);
+}
+.upper-shell::after { content:""; position:absolute; left:3px; right:3px; bottom:-5px; height:15px; border-radius:50%; background:linear-gradient(#d23040,#851023); box-shadow:inset 0 2px 3px rgba(255,255,255,.15); }
+.upper-surface-highlight { position:absolute; left:34px; top:10px; width:88px; height:38px; border-radius:50%; background:radial-gradient(ellipse,rgba(255,255,255,.17),transparent 69%); transform:rotate(-13deg); }
+.upper-side-shade { position:absolute; right:-13px; top:4px; width:82px; height:92px; background:radial-gradient(ellipse,rgba(76,0,10,.23),transparent 64%); }
 
-/* Leaves and stem are children of the rotating half and therefore turn with it. */
-.mechanical-top .stem { z-index:8; }
-.mechanical-top .stem-back { left:101px; top:0; }
-.mechanical-top .stem-left { left:48px; top:29px; }
-.mechanical-top .stem-right { left:100px; top:25px; }
+/* Real tomato leaves attached to the moving top half. */
+.leaf { position:absolute; z-index:9; left:98px; top:17px; width:78px; height:20px; transform-origin:12px 50%; border-radius:90% 12% 85% 15%; background:linear-gradient(150deg,#83c75e,#377a42 55%,#195233); box-shadow:inset 2px 2px 3px rgba(255,255,255,.12),0 3px 6px rgba(0,0,0,.24); }
+.leaf-a { transform:rotate(8deg); }
+.leaf-b { transform:rotate(66deg) scale(.93); }
+.leaf-c { transform:rotate(139deg) scale(.91); }
+.leaf-d { transform:rotate(207deg) scale(.88); }
+.stem-core { position:absolute; z-index:10; left:105px; top:0; width:20px; height:49px; border-radius:65% 25% 68% 25%; transform:rotate(-4deg); background:linear-gradient(145deg,#89c967,#2f713f 56%,#164c31); box-shadow:inset 2px 2px 3px rgba(255,255,255,.12),0 3px 7px rgba(0,0,0,.25); }
 
-/* Fixed pointer on lower body. */
-.body-index {
-  position:absolute;
-  left:124px;
-  top:103px;
-  z-index:9;
-  width:12px;
-  height:12px;
-  transform:translateZ(58px);
-  pointer-events:none;
-  filter:drop-shadow(0 2px 3px rgba(0,0,0,.42));
-}
-.body-index::before {
-  content:"";
-  display:block;
-  width:0;
-  height:0;
-  border-left:6px solid transparent;
-  border-right:6px solid transparent;
-  border-bottom:11px solid #fff2e8;
-}
+/* Number strip on the rotating seam. */
+.scale-window { position:absolute; z-index:12; left:10px; right:10px; bottom:-3px; height:30px; overflow:hidden; border-radius:50% / 45%; transform:translateZ(14px); pointer-events:none; }
+.scale-track { position:absolute; left:50%; top:1px; height:28px; width:840px; transform:translateX(calc(-50% + var(--scale-x,0px))); transition:transform .12s linear; white-space:nowrap; }
+.mechanical-top.dragging .scale-track { transition:none; }
+.scale-mark { position:absolute; top:0; width:2px; height:12px; background:rgba(255,246,236,.74); transform:translateX(-50%); box-shadow:0 1px 1px rgba(0,0,0,.25); }
+.scale-mark.minor { height:7px; top:3px; opacity:.65; width:1px; }
+.scale-number { position:absolute; top:11px; transform:translateX(-50%); font-size:10px; font-weight:900; line-height:1; color:#fff0e6; text-shadow:0 1px 2px rgba(70,0,12,.8); font-variant-numeric:tabular-nums; }
 
-/* Big invisible grip covering the entire upper half, not a tiny crown. */
-.top-drag-surface {
-  position:absolute;
-  z-index:12;
-  left:21px;
-  top:40px;
-  width:218px;
-  height:118px;
-  border:0;
-  border-radius:50% 50% 28% 28% / 64% 64% 36% 36%;
-  background:transparent;
-  color:transparent;
-  touch-action:none;
-  cursor:grab;
-  -webkit-user-select:none;
-  user-select:none;
-}
+.body-index { position:absolute; left:126px; top:125px; z-index:16; width:8px; height:21px; pointer-events:none; transform:translateZ(55px); }
+.body-index::before { content:""; position:absolute; top:0; left:0; width:0; height:0; border-left:4px solid transparent; border-right:4px solid transparent; border-top:11px solid #fff5e9; filter:drop-shadow(0 2px 2px rgba(0,0,0,.38)); }
+.body-index span { position:absolute; left:3px; top:9px; width:2px; height:12px; border-radius:2px; background:#fff5e9; box-shadow:0 1px 2px rgba(0,0,0,.34); }
+
+.top-drag-surface { position:absolute; z-index:20; left:12px; top:29px; width:236px; height:128px; border:0; border-radius:50% 50% 15% 15% / 63% 63% 20% 20%; background:transparent; touch-action:none; cursor:grab; -webkit-user-select:none; user-select:none; }
 .top-drag-surface:active { cursor:grabbing; }
+.timer-object::after { content:""; position:absolute; left:29px; top:132px; width:202px; height:9px; z-index:6; border-radius:50%; border-top:1px solid rgba(255,171,162,.37); box-shadow:0 -2px 4px rgba(75,0,13,.20); transform:translateZ(25px); pointer-events:none; }
 
-#dialHint {
-  color:#aaa0af;
-  font-weight:700;
-}
-#dialHint::before {
-  content:"↔ ";
-  color:#ff858a;
-  font-weight:900;
-}
+/* Old digital pieces are deliberately invisible if an old cache briefly mixes files. */
+.tomato-body,.face,.time-display,.progress-track,.status-row,.session-info { display:none !important; }
 
-/* Slight highlight at the seam to make the two-piece body obvious. */
-.timer-object::after {
-  content:"";
-  position:absolute;
-  left:31px;
-  top:136px;
-  width:198px;
-  height:11px;
-  border-radius:50%;
-  border-top:1px solid rgba(255,160,154,.35);
-  box-shadow:0 -2px 5px rgba(91,4,17,.22);
-  pointer-events:none;
-  transform:translateZ(31px);
-}
+#dialHint { color:#aaa0af; font-weight:750; }
+#dialHint::before { content:"↔ "; color:#ff858a; font-weight:900; }
+.mechanical-status { position:absolute; bottom:-17px; color:#7f7485; font-size:.66rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
 
-@media (pointer:coarse) {
-  .top-drag-surface {
-    left:13px;
-    top:31px;
-    width:234px;
-    height:136px;
-  }
-}
+@media (pointer:coarse) { .top-drag-surface { left:5px; top:22px; width:250px; height:144px; } }
