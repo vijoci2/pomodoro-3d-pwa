@@ -2,35 +2,56 @@
   'use strict';
 
   const dial = document.getElementById('dial');
-  const crown = document.getElementById('mechanicalTop');
   const display = document.getElementById('timeDisplay');
   const hint = document.getElementById('dialHint');
-  if (!dial || !crown || !display) return;
+  const timerObject = document.getElementById('timerObject');
+  if (!dial || !display || !timerObject) return;
+
+  // Build a true rotating top assembly around the existing crown/leaves.
+  let crown = document.getElementById('mechanicalTop');
+  if (!crown) {
+    crown = document.createElement('div');
+    crown.id = 'mechanicalTop';
+    crown.className = 'mechanical-top';
+    timerObject.insertBefore(crown, timerObject.firstChild);
+
+    const parts = [
+      timerObject.querySelector('.stem-back'),
+      dial,
+      timerObject.querySelector('.stem-left'),
+      timerObject.querySelector('.stem-right')
+    ].filter(Boolean);
+    parts.forEach(part => crown.appendChild(part));
+
+    const scale = document.createElement('div');
+    scale.className = 'mechanical-scale';
+    crown.insertBefore(scale, dial);
+
+    const index = document.createElement('div');
+    index.className = 'body-index';
+    timerObject.appendChild(index);
+  }
 
   let active = false;
   let lastX = 0;
   let accumulatedX = 0;
   let syntheticY = 0;
   let pointerId = null;
-  const PX_PER_MINUTE = 7;
+  const PX_PER_MINUTE = 6;
   const SYNTHETIC_Y_STEP = 8;
 
   function minutesFromDisplay() {
     const parts = display.textContent.trim().split(':');
-    const m = Number(parts[0]) || 0;
-    const s = Number(parts[1]) || 0;
-    return m + s / 60;
+    return (Number(parts[0]) || 0) + (Number(parts[1]) || 0) / 60;
   }
 
   function crownAngle() {
-    // A physical Pomodoro dial makes one useful sweep across 0-60 minutes.
-    // Values above 60 remain at the end stop visually while the digital timer can still exceed 60.
     const minutes = Math.max(0, Math.min(60, minutesFromDisplay()));
     return -150 + (minutes / 60) * 300;
   }
 
   function syncCrown(animate = true) {
-    if (!active && animate) crown.style.transition = '';
+    crown.classList.toggle('no-animate', !animate || active);
     crown.style.setProperty('--crown-angle', `${crownAngle()}deg`);
   }
 
@@ -38,9 +59,6 @@
     if (hint) hint.textContent = text;
   }
 
-  // Capture native horizontal moves before the old vertical-drag handler sees them.
-  // We translate the horizontal gesture into synthetic vertical steps so the existing
-  // timer state, persistence and settings logic remain the single source of truth.
   dial.addEventListener('pointerdown', (e) => {
     if (e.button !== undefined && e.button !== 0) return;
     active = true;
@@ -49,7 +67,8 @@
     syntheticY = e.clientY;
     accumulatedX = 0;
     crown.classList.add('dragging');
-    requestAnimationFrame(() => setHint('Drag left / right to rotate and set minutes'));
+    crown.classList.add('no-animate');
+    requestAnimationFrame(() => setHint('Drag left / right — the top rotates like a real Pomodoro'));
   }, true);
 
   dial.addEventListener('pointermove', (e) => {
@@ -64,9 +83,8 @@
     accumulatedX += dx;
 
     while (Math.abs(accumulatedX) >= PX_PER_MINUTE) {
-      const minuteStep = accumulatedX > 0 ? 1 : -1;
-      // Existing app logic: upward movement increases time, downward decreases it.
-      syntheticY -= minuteStep * SYNTHETIC_Y_STEP;
+      const step = accumulatedX > 0 ? 1 : -1;
+      syntheticY -= step * SYNTHETIC_Y_STEP;
 
       const synthetic = new PointerEvent('pointermove', {
         bubbles: true,
@@ -82,7 +100,7 @@
       Object.defineProperty(synthetic, '__pomodoroMechanicalSynthetic', { value: true });
       dial.dispatchEvent(synthetic);
 
-      accumulatedX -= minuteStep * PX_PER_MINUTE;
+      accumulatedX -= step * PX_PER_MINUTE;
       syncCrown(false);
     }
   }, true);
@@ -91,16 +109,16 @@
     if (!active) return;
     active = false;
     pointerId = null;
-    crown.classList.remove('dragging');
+    crown.classList.remove('dragging', 'no-animate');
     syncCrown(true);
-    setTimeout(() => setHint('Drag the top left / right to set time'), 0);
+    setHint('Drag the top left / right to set time');
   }
 
   dial.addEventListener('pointerup', endDrag, true);
   dial.addEventListener('pointercancel', endDrag, true);
   dial.addEventListener('lostpointercapture', endDrag, true);
 
-  // Keep the physical crown synchronized when mode/reset/settings change the time.
+  // Keep the mechanical crown in sync after reset, mode changes or settings edits.
   const observer = new MutationObserver(() => syncCrown(true));
   observer.observe(display, { childList: true, characterData: true, subtree: true });
 
