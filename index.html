@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#17111f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Pomodoro 3D" />
+  <meta name="description" content="A tactile 3D Pomodoro timer that works offline and installs on Android." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icon-192.svg" />
+  <title>Pomodoro 3D</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">FOCUS TIMER</div>
+        <h1>Pomodoro <span>3D</span></h1>
+      </div>
+      <div class="top-actions">
+        <button id="installBtn" class="icon-btn install hidden" aria-label="Install app" title="Install app">⇩</button>
+        <button id="settingsBtn" class="icon-btn" aria-label="Open settings" title="Settings">⚙</button>
+      </div>
+    </header>
+
+    <section class="mode-tabs" aria-label="Timer mode">
+      <button class="mode active" data-mode="focus">Focus</button>
+      <button class="mode" data-mode="short">Short break</button>
+      <button class="mode" data-mode="long">Long break</button>
+    </section>
+
+    <section class="scene" id="scene" aria-label="3D pomodoro timer">
+      <div class="floor-shadow"></div>
+      <div class="timer-object" id="timerObject">
+        <div class="stem stem-back"></div>
+        <button id="dial" class="dial" aria-label="Drag dial to adjust minutes" title="Drag to adjust minutes">
+          <div class="dial-ridges"></div>
+          <div class="dial-marker"></div>
+        </button>
+        <div class="stem stem-left"></div>
+        <div class="stem stem-right"></div>
+
+        <div class="tomato-body">
+          <div class="tomato-highlight"></div>
+          <div class="tomato-rim"></div>
+          <div class="face">
+            <div class="face-glass">
+              <div class="status-row">
+                <span id="modeLabel">FOCUS</span>
+                <span id="statusDot" class="status-dot"></span>
+              </div>
+              <div id="timeDisplay" class="time-display">25:00</div>
+              <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+              <div class="session-info">
+                <span id="sessionText">Session 1 of 4</span>
+                <span id="todayText">0 today</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="base-ring">
+          <div class="base-glow"></div>
+        </div>
+      </div>
+      <div class="hint" id="dialHint">Drag the top dial to adjust time</div>
+    </section>
+
+    <section class="controls" aria-label="Timer controls">
+      <button id="resetBtn" class="secondary-btn" aria-label="Reset timer">↺</button>
+      <button id="startBtn" class="primary-btn"><span id="startIcon">▶</span><span id="startText">Start</span></button>
+      <button id="skipBtn" class="secondary-btn" aria-label="Skip session">⏭</button>
+    </section>
+
+    <section class="cycle-card">
+      <div class="cycle-heading">
+        <span>Current cycle</span>
+        <button id="soundQuickBtn" class="text-btn" aria-label="Toggle sounds">Sound on</button>
+      </div>
+      <div id="cycleDots" class="cycle-dots"></div>
+    </section>
+
+    <section class="stats-grid">
+      <article><strong id="completedToday">0</strong><span>Focus sessions today</span></article>
+      <article><strong id="focusMinutes">0</strong><span>Focus minutes today</span></article>
+    </section>
+  </main>
+
+  <div id="scrim" class="scrim hidden"></div>
+  <aside id="settingsPanel" class="sheet" aria-hidden="true">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head">
+      <div><div class="eyebrow">CUSTOMIZE</div><h2>Timer settings</h2></div>
+      <button id="closeSettings" class="icon-btn" aria-label="Close settings">✕</button>
+    </div>
+
+    <div class="settings-scroll">
+      <section class="setting-group">
+        <h3>Durations</h3>
+        <div class="number-row"><label for="focusMinutesInput">Focus</label><div><input id="focusMinutesInput" type="number" min="1" max="120" inputmode="numeric"><span>min</span></div></div>
+        <div class="number-row"><label for="shortMinutesInput">Short break</label><div><input id="shortMinutesInput" type="number" min="1" max="60" inputmode="numeric"><span>min</span></div></div>
+        <div class="number-row"><label for="longMinutesInput">Long break</label><div><input id="longMinutesInput" type="number" min="1" max="90" inputmode="numeric"><span>min</span></div></div>
+        <div class="number-row"><label for="sessionsInput">Long break after</label><div><input id="sessionsInput" type="number" min="1" max="12" inputmode="numeric"><span>focus</span></div></div>
+      </section>
+
+      <section class="setting-group">
+        <h3>Automation</h3>
+        <label class="switch-row"><span><b>Auto-start breaks</b><small>Begin the next break automatically</small></span><input id="autoBreakInput" type="checkbox"><i></i></label>
+        <label class="switch-row"><span><b>Auto-start focus</b><small>Begin focus after a break automatically</small></span><input id="autoFocusInput" type="checkbox"><i></i></label>
+        <label class="switch-row"><span><b>Keep screen awake</b><small>Use Android wake lock while running</small></span><input id="wakeInput" type="checkbox"><i></i></label>
+      </section>
+
+      <section class="setting-group">
+        <h3>Feedback</h3>
+        <label class="switch-row"><span><b>Completion sound</b><small>Play a bell when a session ends</small></span><input id="soundInput" type="checkbox"><i></i></label>
+        <label class="switch-row"><span><b>Soft ticking</b><small>Optional physical-timer feel</small></span><input id="tickInput" type="checkbox"><i></i></label>
+        <label class="switch-row"><span><b>Vibration</b><small>Vibrate on completion when supported</small></span><input id="vibrateInput" type="checkbox"><i></i></label>
+        <button id="notificationBtn" class="wide-action">Enable notifications</button>
+      </section>
+
+      <section class="setting-group">
+        <h3>Appearance</h3>
+        <label class="switch-row"><span><b>Motion effects</b><small>3D tilt and idle animation</small></span><input id="motionInput" type="checkbox"><i></i></label>
+        <label class="switch-row"><span><b>High contrast digits</b><small>Brighter timer display</small></span><input id="contrastInput" type="checkbox"><i></i></label>
+      </section>
+
+      <section class="setting-group danger-zone">
+        <button id="resetStatsBtn" class="wide-action muted">Reset today's statistics</button>
+      </section>
+      <div class="safe-space"></div>
+    </div>
+  </aside>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
