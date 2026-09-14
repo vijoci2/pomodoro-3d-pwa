@@ -1,77 +1,85 @@
 (() => {
   'use strict';
 
-  const dial = document.getElementById('dial');
+  const grip = document.getElementById('dial');
+  const upper = document.getElementById('mechanicalTop');
   const display = document.getElementById('timeDisplay');
   const hint = document.getElementById('dialHint');
-  const timerObject = document.getElementById('timerObject');
-  if (!dial || !display || !timerObject) return;
-
-  // Build a true rotating top assembly around the existing crown/leaves.
-  let crown = document.getElementById('mechanicalTop');
-  if (!crown) {
-    crown = document.createElement('div');
-    crown.id = 'mechanicalTop';
-    crown.className = 'mechanical-top';
-    timerObject.insertBefore(crown, timerObject.firstChild);
-
-    const parts = [
-      timerObject.querySelector('.stem-back'),
-      dial,
-      timerObject.querySelector('.stem-left'),
-      timerObject.querySelector('.stem-right')
-    ].filter(Boolean);
-    parts.forEach(part => crown.appendChild(part));
-
-    const scale = document.createElement('div');
-    scale.className = 'mechanical-scale';
-    crown.insertBefore(scale, dial);
-
-    const index = document.createElement('div');
-    index.className = 'body-index';
-    timerObject.appendChild(index);
-  }
+  if (!grip || !upper || !display) return;
 
   let active = false;
-  let lastX = 0;
-  let accumulatedX = 0;
-  let syntheticY = 0;
   let pointerId = null;
-  const PX_PER_MINUTE = 6;
+  let lastX = 0;
+  let accX = 0;
+  let syntheticY = 0;
+  let audioCtx = null;
+  let lastClickAt = 0;
+
+  const PX_PER_MINUTE = 7;
   const SYNTHETIC_Y_STEP = 8;
 
-  function minutesFromDisplay() {
-    const parts = display.textContent.trim().split(':');
-    return (Number(parts[0]) || 0) + (Number(parts[1]) || 0) / 60;
+  function minsFromDisplay() {
+    const [m,s] = display.textContent.trim().split(':').map(Number);
+    return (m || 0) + (s || 0) / 60;
   }
 
-  function crownAngle() {
-    const minutes = Math.max(0, Math.min(60, minutesFromDisplay()));
-    return -150 + (minutes / 60) * 300;
+  function visualAngle() {
+    const m = Math.max(0, Math.min(60, minsFromDisplay()));
+    return -150 + (m / 60) * 300;
   }
 
-  function syncCrown(animate = true) {
-    crown.classList.toggle('no-animate', !animate || active);
-    crown.style.setProperty('--crown-angle', `${crownAngle()}deg`);
+  function syncUpper(animate = true) {
+    if (animate && !active) upper.style.transition = '';
+    upper.style.setProperty('--crown-angle', `${visualAngle()}deg`);
   }
 
-  function setHint(text) {
-    if (hint) hint.textContent = text;
+  function ctx() {
+    if (!audioCtx) {
+      const C = window.AudioContext || window.webkitAudioContext;
+      if (C) audioCtx = new C();
+    }
+    if (audioCtx?.state === 'suspended') audioCtx.resume().catch(()=>{});
+    return audioCtx;
   }
 
-  dial.addEventListener('pointerdown', (e) => {
+  function clickSound(stronger = false) {
+    const c = ctx();
+    if (!c) return;
+    const now = c.currentTime;
+    if (!stronger && performance.now() - lastClickAt < 32) return;
+    lastClickAt = performance.now();
+
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    const filter = c.createBiquadFilter();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(stronger ? 210 : 330, now);
+    osc.frequency.exponentialRampToValueAtTime(stronger ? 120 : 190, now + (stronger ? .06 : .025));
+    filter.type = 'bandpass';
+    filter.frequency.value = stronger ? 700 : 1100;
+    filter.Q.value = 1.5;
+    gain.gain.setValueAtTime(stronger ? .07 : .028, now);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + (stronger ? .08 : .035));
+    osc.connect(filter); filter.connect(gain); gain.connect(c.destination);
+    osc.start(now); osc.stop(now + (stronger ? .085 : .04));
+  }
+
+  function setHint(t) { if (hint) hint.textContent = t; }
+
+  grip.addEventListener('pointerdown', (e) => {
     if (e.button !== undefined && e.button !== 0) return;
     active = true;
     pointerId = e.pointerId;
     lastX = e.clientX;
+    accX = 0;
     syntheticY = e.clientY;
-    accumulatedX = 0;
-    crown.classList.add('dragging');
-    crown.classList.add('no-animate');
-    requestAnimationFrame(() => setHint('Drag left / right — the top rotates like a real Pomodoro'));
+    upper.classList.add('dragging');
+    try { grip.setPointerCapture(e.pointerId); } catch {}
+    ctx();
+    setHint('Twist left / right • release when set');
   }, true);
 
-  dial.addEventListener('pointermove', (e) => {
+  grip.addEventListener('pointermove', (e) => {
     if (!active || e.__pomodoroMechanicalSynthetic) return;
     if (pointerId !== null && e.pointerId !== pointerId) return;
 
@@ -80,48 +88,51 @@
 
     const dx = e.clientX - lastX;
     lastX = e.clientX;
-    accumulatedX += dx;
+    accX += dx;
 
-    while (Math.abs(accumulatedX) >= PX_PER_MINUTE) {
-      const step = accumulatedX > 0 ? 1 : -1;
+    while (Math.abs(accX) >= PX_PER_MINUTE) {
+      const step = accX > 0 ? 1 : -1;
       syntheticY -= step * SYNTHETIC_Y_STEP;
 
       const synthetic = new PointerEvent('pointermove', {
-        bubbles: true,
-        cancelable: true,
-        pointerId: e.pointerId,
-        pointerType: e.pointerType || 'touch',
-        isPrimary: true,
-        clientX: e.clientX,
-        clientY: syntheticY,
-        buttons: 1,
-        pressure: e.pressure || 0.5
+        bubbles:true,
+        cancelable:true,
+        pointerId:e.pointerId,
+        pointerType:e.pointerType || 'touch',
+        isPrimary:true,
+        clientX:e.clientX,
+        clientY:syntheticY,
+        buttons:1,
+        pressure:e.pressure || .5
       });
-      Object.defineProperty(synthetic, '__pomodoroMechanicalSynthetic', { value: true });
-      dial.dispatchEvent(synthetic);
+      Object.defineProperty(synthetic, '__pomodoroMechanicalSynthetic', { value:true });
+      grip.dispatchEvent(synthetic);
 
-      accumulatedX -= step * PX_PER_MINUTE;
-      syncCrown(false);
+      accX -= step * PX_PER_MINUTE;
+      syncUpper(false);
+      clickSound(false);
+      if (navigator.vibrate) navigator.vibrate(4);
     }
   }, true);
 
-  function endDrag() {
+  function end() {
     if (!active) return;
     active = false;
     pointerId = null;
-    crown.classList.remove('dragging', 'no-animate');
-    syncCrown(true);
-    setHint('Drag the top left / right to set time');
+    upper.classList.remove('dragging');
+    syncUpper(true);
+    clickSound(true);
+    if (navigator.vibrate) navigator.vibrate(12);
+    setHint('Hold the upper half and drag left / right');
   }
 
-  dial.addEventListener('pointerup', endDrag, true);
-  dial.addEventListener('pointercancel', endDrag, true);
-  dial.addEventListener('lostpointercapture', endDrag, true);
+  grip.addEventListener('pointerup', end, true);
+  grip.addEventListener('pointercancel', end, true);
+  grip.addEventListener('lostpointercapture', end, true);
 
-  // Keep the mechanical crown in sync after reset, mode changes or settings edits.
-  const observer = new MutationObserver(() => syncCrown(true));
-  observer.observe(display, { childList: true, characterData: true, subtree: true });
+  const observer = new MutationObserver(() => syncUpper(true));
+  observer.observe(display, { childList:true, characterData:true, subtree:true });
 
-  syncCrown(false);
-  setHint('Drag the top left / right to set time');
+  syncUpper(false);
+  setHint('Hold the upper half and drag left / right');
 })();
