@@ -1,4 +1,4 @@
-const CACHE = 'pomodoro-3d-v1.1.0';
+const CACHE = 'pomodoro-3d-v1.2.0';
 const SHELL = ['./','./index.html','./styles.css','./mechanical.css','./app.js','./mechanical-dial.js','./manifest.webmanifest','./icon.svg','./icon-192.svg','./icon-512.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
