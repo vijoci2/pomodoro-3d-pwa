@@ -1,5 +1,5 @@
-const CACHE = 'pomodoro-3d-v1.0.1';
-const SHELL = ['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon.svg','./icon-192.svg','./icon-512.svg'];
+const CACHE = 'pomodoro-3d-v1.1.0';
+const SHELL = ['./','./index.html','./styles.css','./mechanical.css','./app.js','./mechanical-dial.js','./manifest.webmanifest','./icon.svg','./icon-192.svg','./icon-512.svg'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -8,11 +8,11 @@ self.addEventListener('activate', event => {
 });
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+  event.respondWith(fetch(event.request).then(response => {
     const copy = response.clone();
     caches.open(CACHE).then(c => c.put(event.request, copy));
     return response;
-  }).catch(() => caches.match('./index.html'))));
+  }).catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html'))));
 });
 self.addEventListener('notificationclick', event => {
   event.notification.close();
