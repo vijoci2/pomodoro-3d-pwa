@@ -30,7 +30,13 @@ public class MainActivity extends Activity {
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(16, 12, 22));
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                syncNativeAlarmFromWeb();
+            }
+        });
         webView.setWebChromeClient(new WebChromeClient());
 
         WebSettings settings = webView.getSettings();
@@ -51,11 +57,18 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (webView != null) {
-            webView.postDelayed(() -> webView.evaluateJavascript(
-                    "window.dispatchEvent(new Event('android-alarm-permission-changed'));",
-                    null), 250);
-        }
+        if (webView != null) webView.postDelayed(this::syncNativeAlarmFromWeb, 300L);
+    }
+
+    private void syncNativeAlarmFromWeb() {
+        if (webView == null) return;
+        String js = "(function(){try{" +
+                "var s=JSON.parse(localStorage.getItem('pomodoro-mechanical-v5')||'{}');" +
+                "if(s.running&&s.endTime&&s.endTime>Date.now()&&window.AndroidPomodoro){" +
+                "AndroidPomodoro.scheduleAlarm(Math.round(s.endTime));" +
+                "}" +
+                "}catch(e){}})();";
+        webView.evaluateJavascript(js, null);
     }
 
     @Override
