@@ -1,0 +1,40 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'in.pomodoro.timer'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'in.pomodoro.timer'
+        minSdk 26
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+tasks.register('syncWebAssets', Copy) {
+    from(rootProject.projectDir.parentFile) {
+        include 'index.html'
+        include 'styles.css'
+        include 'mechanical.css'
+        include 'app.js'
+        include 'manifest.webmanifest'
+        include 'sw.js'
+        include 'icon.svg'
+        include 'icon-192.svg'
+        include 'icon-512.svg'
+    }
+    into "$projectDir/src/main/assets"
+}
+
+preBuild.dependsOn syncWebAssets
