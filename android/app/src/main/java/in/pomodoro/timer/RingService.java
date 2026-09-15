@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Build;
 import android.os.IBinder;
@@ -131,7 +132,7 @@ public class RingService extends Service {
                         format,
                         bufferSize,
                         AudioTrack.MODE_STREAM,
-                        AudioTrack.AUDIO_SESSION_ID_GENERATE);
+                        AudioManager.AUDIO_SESSION_ID_GENERATE);
                 audioTrack.play();
 
                 long started = System.currentTimeMillis();
