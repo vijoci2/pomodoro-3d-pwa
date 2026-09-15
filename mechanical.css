@@ -15,12 +15,20 @@
 .lower-highlight { position:absolute; left:35px; top:19px; width:72px; height:35px; border-radius:50%; background:radial-gradient(ellipse,rgba(255,255,255,.13),transparent 70%); }
 .lower-shadow { position:absolute; right:6px; bottom:3px; width:105px; height:72px; border-radius:50%; background:radial-gradient(ellipse,rgba(62,0,12,.23),transparent 68%); }
 
+.embedded-time {
+  position:absolute; left:50%; top:49px; transform:translateX(-50%);
+  font-size:1.7rem; font-weight:850; letter-spacing:.04em; line-height:1;
+  color:rgba(116,11,28,.78); font-variant-numeric:tabular-nums;
+  text-shadow:0 1px 0 rgba(255,120,116,.25), 0 -1px 1px rgba(72,0,12,.58), inset 0 0 2px rgba(0,0,0,.2);
+  mix-blend-mode:multiply; opacity:.9; pointer-events:none;
+}
+
 .mechanical-top {
-  --yaw:0deg;
+  --yaw:0deg; --slide-x:0px;
   position:absolute; left:18px; top:35px; width:224px; height:111px; z-index:7;
   transform-style:preserve-3d; transform-origin:112px 97px;
-  transform:translateZ(28px) rotateY(var(--yaw));
-  transition:transform .14s cubic-bezier(.18,.8,.25,1),filter .12s ease;
+  transform:translate3d(var(--slide-x),0,28px) rotateY(var(--yaw));
+  transition:transform .12s linear,filter .12s ease;
   pointer-events:none; will-change:transform;
 }
 .mechanical-top.dragging { transition:none; filter:drop-shadow(0 8px 9px rgba(0,0,0,.26)); }
@@ -34,7 +42,6 @@
 .upper-surface-highlight { position:absolute; left:34px; top:10px; width:88px; height:38px; border-radius:50%; background:radial-gradient(ellipse,rgba(255,255,255,.17),transparent 69%); transform:rotate(-13deg); }
 .upper-side-shade { position:absolute; right:-13px; top:4px; width:82px; height:92px; background:radial-gradient(ellipse,rgba(76,0,10,.23),transparent 64%); }
 
-/* Real tomato leaves attached to the moving top half. */
 .leaf { position:absolute; z-index:9; left:98px; top:17px; width:78px; height:20px; transform-origin:12px 50%; border-radius:90% 12% 85% 15%; background:linear-gradient(150deg,#83c75e,#377a42 55%,#195233); box-shadow:inset 2px 2px 3px rgba(255,255,255,.12),0 3px 6px rgba(0,0,0,.24); }
 .leaf-a { transform:rotate(8deg); }
 .leaf-b { transform:rotate(66deg) scale(.93); }
@@ -42,10 +49,8 @@
 .leaf-d { transform:rotate(207deg) scale(.88); }
 .stem-core { position:absolute; z-index:10; left:105px; top:0; width:20px; height:49px; border-radius:65% 25% 68% 25%; transform:rotate(-4deg); background:linear-gradient(145deg,#89c967,#2f713f 56%,#164c31); box-shadow:inset 2px 2px 3px rgba(255,255,255,.12),0 3px 7px rgba(0,0,0,.25); }
 
-/* Number strip on the rotating seam. */
 .scale-window { position:absolute; z-index:12; left:10px; right:10px; bottom:-3px; height:30px; overflow:hidden; border-radius:50% / 45%; transform:translateZ(14px); pointer-events:none; }
-.scale-track { position:absolute; left:50%; top:1px; height:28px; width:840px; transform:translateX(calc(-50% + var(--scale-x,0px))); transition:transform .12s linear; white-space:nowrap; }
-.mechanical-top.dragging .scale-track { transition:none; }
+.scale-track { position:absolute; left:50%; top:1px; height:28px; width:840px; transform:translateX(calc(-50% + var(--scale-x,0px))); transition:none; white-space:nowrap; will-change:transform; }
 .scale-mark { position:absolute; top:0; width:2px; height:12px; background:rgba(255,246,236,.74); transform:translateX(-50%); box-shadow:0 1px 1px rgba(0,0,0,.25); }
 .scale-mark.minor { height:7px; top:3px; opacity:.65; width:1px; }
 .scale-number { position:absolute; top:11px; transform:translateX(-50%); font-size:10px; font-weight:900; line-height:1; color:#fff0e6; text-shadow:0 1px 2px rgba(70,0,12,.8); font-variant-numeric:tabular-nums; }
@@ -57,9 +62,6 @@
 .top-drag-surface { position:absolute; z-index:20; left:12px; top:29px; width:236px; height:128px; border:0; border-radius:50% 50% 15% 15% / 63% 63% 20% 20%; background:transparent; touch-action:none; cursor:grab; -webkit-user-select:none; user-select:none; }
 .top-drag-surface:active { cursor:grabbing; }
 .timer-object::after { content:""; position:absolute; left:29px; top:132px; width:202px; height:9px; z-index:6; border-radius:50%; border-top:1px solid rgba(255,171,162,.37); box-shadow:0 -2px 4px rgba(75,0,13,.20); transform:translateZ(25px); pointer-events:none; }
-
-/* Old digital pieces are deliberately invisible if an old cache briefly mixes files. */
-.tomato-body,.face,.time-display,.progress-track,.status-row,.session-info { display:none !important; }
 
 #dialHint { color:#aaa0af; font-weight:750; }
 #dialHint::before { content:"↔ "; color:#ff858a; font-weight:900; }
