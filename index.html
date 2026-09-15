@@ -22,10 +22,7 @@
 
   <main class="app-shell">
     <header class="topbar">
-      <div>
-        <div class="eyebrow">MECHANICAL FOCUS TIMER</div>
-        <h1>Pomodoro <span>3D</span></h1>
-      </div>
+      <div><div class="eyebrow">MECHANICAL FOCUS TIMER</div><h1>Pomodoro <span>3D</span></h1></div>
       <div class="top-actions">
         <button id="installBtn" class="icon-btn install hidden" aria-label="Install app" title="Install app">⇩</button>
         <button id="settingsBtn" class="icon-btn" aria-label="Open settings" title="Settings">⚙</button>
@@ -48,39 +45,34 @@
         </div>
 
         <div id="mechanicalTop" class="mechanical-top" aria-hidden="true">
-          <div class="upper-shell">
-            <div class="upper-surface-highlight"></div>
-            <div class="upper-side-shade"></div>
+          <div class="top-clip">
+            <div class="upper-shell">
+              <div class="upper-surface-highlight"></div>
+              <div class="upper-side-shade"></div>
+            </div>
           </div>
           <div class="leaf leaf-a"></div>
           <div class="leaf leaf-b"></div>
           <div class="leaf leaf-c"></div>
           <div class="leaf leaf-d"></div>
           <div class="stem-core"></div>
-          <div class="scale-window">
-            <div id="scaleTrack" class="scale-track"></div>
-          </div>
+          <div class="scale-window"><div id="scaleTrack" class="scale-track"></div></div>
         </div>
 
         <div class="body-index" aria-hidden="true"><span></span></div>
-        <button id="dial" class="top-drag-surface" aria-label="Hold the upper half and drag left or right to set minutes" title="Hold the upper half and twist left or right"></button>
+        <button id="dial" class="top-drag-surface" aria-label="Drag upper half left or right to change time" title="Drag left or right"></button>
         <div class="base-ring" aria-hidden="true"><div class="base-glow"></div></div>
       </div>
-      <div class="hint" id="dialHint">Hold the upper half and drag left / right</div>
+      <div class="hint" id="dialHint">Swipe right for more time · left toward zero</div>
       <div id="mechanicalStatus" class="mechanical-status" aria-live="polite">Ready</div>
     </section>
 
-    <section class="controls" aria-label="Timer controls">
-      <button id="resetBtn" class="secondary-btn" aria-label="Reset timer">↺</button>
+    <section id="controls" class="controls single-control" aria-label="Timer controls">
       <button id="startBtn" class="primary-btn"><span id="startIcon">▶</span><span id="startText">Start</span></button>
-      <button id="skipBtn" class="secondary-btn" aria-label="Skip session">⏭</button>
     </section>
 
     <section class="cycle-card">
-      <div class="cycle-heading">
-        <span id="sessionText">Session 1 of 4</span>
-        <button id="soundQuickBtn" class="text-btn" aria-label="Toggle sounds">Sound on</button>
-      </div>
+      <div class="cycle-heading"><span id="sessionText">Session 1 of 4</span><button id="soundQuickBtn" class="text-btn" aria-label="Toggle sounds">Sound on</button></div>
       <div id="cycleDots" class="cycle-dots"></div>
     </section>
 
@@ -93,11 +85,7 @@
   <div id="scrim" class="scrim hidden"></div>
   <aside id="settingsPanel" class="sheet" aria-hidden="true">
     <div class="sheet-handle"></div>
-    <div class="sheet-head">
-      <div><div class="eyebrow">CUSTOMIZE</div><h2>Timer settings</h2></div>
-      <button id="closeSettings" class="icon-btn" aria-label="Close settings">✕</button>
-    </div>
-
+    <div class="sheet-head"><div><div class="eyebrow">CUSTOMIZE</div><h2>Timer settings</h2></div><button id="closeSettings" class="icon-btn" aria-label="Close settings">✕</button></div>
     <div class="settings-scroll">
       <section class="setting-group">
         <h3>Durations</h3>
@@ -106,14 +94,12 @@
         <div class="number-row"><label for="longMinutesInput">Long break</label><div><input id="longMinutesInput" type="number" min="1" max="60" inputmode="numeric"><span>min</span></div></div>
         <div class="number-row"><label for="sessionsInput">Long break after</label><div><input id="sessionsInput" type="number" min="1" max="12" inputmode="numeric"><span>focus</span></div></div>
       </section>
-
       <section class="setting-group">
         <h3>Automation</h3>
         <label class="switch-row"><span><b>Auto-start breaks</b><small>Begin the next break automatically</small></span><input id="autoBreakInput" type="checkbox"><i></i></label>
         <label class="switch-row"><span><b>Auto-start focus</b><small>Begin focus after a break automatically</small></span><input id="autoFocusInput" type="checkbox"><i></i></label>
         <label class="switch-row"><span><b>Keep screen awake</b><small>Keep the display awake while running</small></span><input id="wakeInput" type="checkbox"><i></i></label>
       </section>
-
       <section class="setting-group">
         <h3>Mechanical sound</h3>
         <label class="switch-row"><span><b>Sounds</b><small>Ratchet while turning and bell at zero</small></span><input id="soundInput" type="checkbox"><i></i></label>
@@ -121,15 +107,8 @@
         <label class="switch-row"><span><b>Vibration</b><small>Small haptic clicks while turning</small></span><input id="vibrateInput" type="checkbox"><i></i></label>
         <button id="notificationBtn" class="wide-action">Enable notifications</button>
       </section>
-
-      <section class="setting-group">
-        <h3>Appearance</h3>
-        <label class="switch-row"><span><b>3D motion</b><small>Subtle depth while the upper half turns</small></span><input id="motionInput" type="checkbox"><i></i></label>
-      </section>
-
-      <section class="setting-group danger-zone">
-        <button id="resetStatsBtn" class="wide-action muted">Reset today's statistics</button>
-      </section>
+      <section class="setting-group"><h3>Appearance</h3><label class="switch-row"><span><b>3D motion</b><small>Subtle sideways mechanical movement</small></span><input id="motionInput" type="checkbox"><i></i></label></section>
+      <section class="setting-group danger-zone"><button id="resetStatsBtn" class="wide-action muted">Reset today's statistics</button></section>
       <div class="safe-space"></div>
     </div>
   </aside>
